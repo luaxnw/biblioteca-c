@@ -1,6 +1,6 @@
 #include "biblioteca.h"
 #include <stdlib.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 // ESTRUTURAS
@@ -54,10 +54,13 @@ struct listaLivros {
 void addUser(listaUsuarios *listaUsuarios, char *nome, char *email){
 
     usuario *new = (usuario*) malloc(sizeof(usuario));
+    listaUsuarios->qtdUsuarios++; //toda chamada adiciona 1 na qtdUsers
+
     strcpy(new->nome, nome);
     strcpy(new->email, email);
     new->next = NULL;
     new->prev = NULL;
+
 
     if (new == NULL) //erro de alocação
         return;
@@ -69,6 +72,21 @@ void addUser(listaUsuarios *listaUsuarios, char *nome, char *email){
         return;
     }
 
+    usuario *aux = listaUsuarios->head;
+
+    // percorre toda a lista verificando se o email fornecido já está
+    // no sistema
+
+    while (aux != NULL){
+
+        if (strcmp(aux->email, email) == 0){
+            printf("Email não cadastrado!\nO email que você está tentando cadastrar já consta no sistema.\n");
+            return;
+        }
+
+        aux = aux->next;
+    }
+
     //adiciona no final
     new->prev = listaUsuarios->tail;
     listaUsuarios->tail->next = new;
@@ -76,15 +94,18 @@ void addUser(listaUsuarios *listaUsuarios, char *nome, char *email){
 
 }
 
-void addLivro(listaLivros *listaLivros, char *titulo, char *autor, data dataPubli, int id, int status, usuario *usuarioRespo){
+void addLivro(listaLivros *listaLivros, char *titulo, char *autor, data dataPubli, usuario *usuarioRespo){
 
     livro *new = (livro*) malloc(sizeof(livro));
+    listaLivros->qtdLivros++; //toda chamada adiciona 1 na qtdLivros
+
     strcpy(new->titulo, titulo);
     strcpy(new->autor, autor);
     new->dataPubli = dataPubli;
-    new->id = id;
-    new->status = status;
+    new->id = listaLivros->qtdLivros;
+    new->status = 0;
     new->usuarioRespo = usuarioRespo;
+
 
     new->next = NULL;
     new->prev = NULL;
@@ -104,3 +125,30 @@ void addLivro(listaLivros *listaLivros, char *titulo, char *autor, data dataPubl
     listaLivros->tail->next = new;
     listaLivros->tail = new; 
 }
+
+// Funções buscar
+void buscarPorId(listaLivros *listaLivros, int id){
+
+    livro *aux = listaLivros->head;
+    char *status;
+
+    while(aux != NULL){
+
+        if (aux->id == id){
+            
+            if (aux->status == 0)  
+                status = "Dispoível";
+            else{
+                status = "Indisponível";
+            }
+
+            printf("ID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\n");
+        }
+
+        aux = aux->next;
+    }
+
+
+}
+
+void buscarPorAutor(listaLivros *listaLivros, char *autor);
