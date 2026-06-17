@@ -3,84 +3,83 @@
 #include <stdio.h>
 #include <string.h>
 
-// ESTRUTURAS
-
-typedef struct data data;
-typedef struct usuario usuario;
-typedef struct listaUsuarios listaUsuarios;
-typedef struct livro livro;
-typedef struct listaLivros listaLivros;
-typedef struct autor autor;
-typedef struct listaLivrosAutor listaLivrosAutor;
-typedef struct livroAutor livroAutor;
-
-struct data
+struct Data
 {
     int dia;
     int mes;
     int ano;
 };
 
-struct usuario
+struct Usuario
 {
     char *nome;
     char *email;
-    usuario *next;
-    usuario *prev;
+
+    Usuario *next;
+    Usuario *prev;
 };
 
-struct listaUsuarios
+struct ListaUsuarios
 {
-    usuario *head;
-    usuario *tail;
+    Usuario *head;
+    Usuario *tail;
+
     int qtdUsuarios;
 };
 
-struct livro
+struct Livro
 {
     char *titulo;
-    struct autor *autor;
-    data dataPubli;
+
+    Autor *autor;
+    Data dataPubli;
+
     int id;
     int status;
-    usuario *usuarioRespo;
-    livro *next;
-    livro *prev;
+
+    Usuario *usuarioRespo;
+
+    Livro *next;
+    Livro *prev;
 };
 
-struct listaLivros
+struct ListaLivros
 {
-    livro *head;
-    livro *tail;
+    Livro *head;
+    Livro *tail;
+
     int qtdLivros;
 };
 
-struct livroAutor
+struct LivroAutor
 {
-    struct livro *livro;
-    livroAutor *next;
-    livroAutor *prev;
+    Livro *livro;
+
+    LivroAutor *next;
+    LivroAutor *prev;
 };
 
-struct listaLivrosAutor
+struct ListaLivrosAutor
 {
-    livroAutor *head;
-    livroAutor *tail;
+    LivroAutor *head;
+    LivroAutor *tail;
+
     int qtdLivrosAutor;
 };
 
-struct autor
+struct Autor
 {
     char *nome;
-    listaLivrosAutor *listaDoAutor;
+
+    ListaLivrosAutor *listaDoAutor;
 };
 
 // FUNÇÕES
 
-void addUser(listaUsuarios *listaUsuarios, char *nome, char *email)
+void addUser(ListaUsuarios *listaUsuarios, char *nome, char *email)
 {
 
-    usuario *new = (usuario *)malloc(sizeof(usuario));
+    Usuario *new = (Usuario *)malloc(sizeof(Usuario));
     listaUsuarios->qtdUsuarios++; // toda chamada adiciona 1 na qtdUsers
 
     strcpy(new->nome, nome);
@@ -100,7 +99,7 @@ void addUser(listaUsuarios *listaUsuarios, char *nome, char *email)
         return;
     }
 
-    usuario *aux = listaUsuarios->head;
+    Usuario *aux = listaUsuarios->head;
 
     // percorre toda a lista verificando se o email fornecido já está
     // no sistema
@@ -123,10 +122,10 @@ void addUser(listaUsuarios *listaUsuarios, char *nome, char *email)
     listaUsuarios->tail = new;
 }
 
-void addLivro(listaLivros *listaLivros, char *titulo, autor *autor, data dataPubli, usuario *usuarioRespo)
+void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPubli, Usuario *usuarioRespo)
 {
 
-    livro *new = (livro *)malloc(sizeof(livro));
+    Livro *new = (Livro *)malloc(sizeof(Livro));
 
     if (new == NULL) // erro de alocação
         return;
@@ -162,9 +161,9 @@ void addLivro(listaLivros *listaLivros, char *titulo, autor *autor, data dataPub
     return;
 }
 
-void addLivroAutor(autor *autor, livro *livro)
+void addLivroAutor(Autor *autor, Livro *livro)
 {
-    livroAutor *new = (livroAutor *)malloc(sizeof(livroAutor));
+    LivroAutor *new = (LivroAutor *)malloc(sizeof(LivroAutor));
 
     if (new == NULL)
         return; // erro de alocação
@@ -193,9 +192,9 @@ void addLivroAutor(autor *autor, livro *livro)
 }
 
 // Funções buscar
-void buscarPorId(listaLivros *listaLivros, int id)
+void buscarPorId(ListaLivros *listaLivros, int id)
 {
-    livro *aux = listaLivros->head;
+    Livro *aux = listaLivros->head;
 
     while (aux != NULL)
     {
@@ -221,9 +220,9 @@ void buscarPorId(listaLivros *listaLivros, int id)
     return;
 }
 
-void buscarPorAutor(autor *autor)
+void buscarPorAutor(Autor *autor)
 {
-    livro *aux = NULL;
+    Livro *aux = NULL;
 
     for (aux = autor->listaDoAutor->head; aux != NULL; aux = aux->next)
     {
@@ -243,7 +242,7 @@ void buscarPorAutor(autor *autor)
     return;
 }
 
-void mostraStatusLivro(livro *livro)
+void mostraStatusLivro(Livro *livro)
 {
 
     if (livro->status == 0)
@@ -254,4 +253,39 @@ void mostraStatusLivro(livro *livro)
     }
 
     return;
+}
+
+// Funções criação das listas
+
+ListaUsuarios *criarListaUsuarios(void)
+{
+    ListaUsuarios *lista = (ListaUsuarios*) malloc(sizeof(ListaUsuarios));
+
+    lista->head = NULL;
+    lista->tail = NULL;
+    lista->qtdUsuarios = 0;
+
+    return lista;
+}
+
+ListaLivros *criarListasLivros(void)
+{
+    ListaLivros *lista = (ListaLivros*) malloc(sizeof(ListaLivros));
+
+    lista->head = NULL;
+    lista->tail = NULL;
+    lista->qtdLivros = 0;
+
+    return lista;
+}
+
+ListaLivrosAutor *criaListaLivrosAutor(void)
+{
+    ListaLivrosAutor *lista = (ListaLivrosAutor*) malloc(sizeof(ListaLivrosAutor));
+    
+    lista->head = NULL;
+    lista->tail = NULL;
+    lista->qtdLivrosAutor = 0;
+
+    return lista;
 }

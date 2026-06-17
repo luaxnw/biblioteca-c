@@ -1,26 +1,48 @@
-typedef struct tData data;
-typedef struct tUsuario usuario;
-typedef struct tListaUsuarios listaUsuarios;
+/* Tipos */
 
-typedef struct tLivro livro;
-typedef struct TlistaLivros listaLivros;
+typedef struct Data Data;
 
-typedef struct tAutor autor;
-typedef struct tLivroAutor livroAutor;
-typedef struct tListaLivrosAutor listaLivrosAutor;
+typedef struct Usuario Usuario;
+typedef struct ListaUsuarios ListaUsuarios;
 
-// FUNÇÕES
+typedef struct Autor Autor;
 
-// Funções adicionar
+typedef struct Livro Livro;
+typedef struct ListaLivros ListaLivros;
 
-void addUser(listaUsuarios *listaUsuarios, char *nome, char *email);
+typedef struct LivroAutor LivroAutor;
+typedef struct ListaLivrosAutor ListaLivrosAutor;
 
-void addLivro(listaLivros *listaLivros, char *titulo, autor *autor, data dataPubli, usuario *usuarioRespo);
 
-void addLivroAutor(autor *autor, livro *livro);
+/* Funções de cadastro */
 
-// Funções buscar
+void addUser(
+    ListaUsuarios *lista,
+    char *nome,
+    char *email
+);
 
-void buscarPorId(listaLivros *listaLivros, int id);
+void addLivro(
+    ListaLivros *lista,
+    char *titulo,
+    Autor *autor,
+    Data dataPubli,
+    Usuario *usuarioRespo
+);
 
-void buscarPorAutor(autor *autor);
+void addLivroAutor(
+    Autor *autor,
+    Livro *livro
+);
+
+
+/* Funções de busca */
+
+void buscarPorId(
+    ListaLivros *lista,
+    int id
+);
+
+void buscarPorAutor(
+    Autor *autor
+);
