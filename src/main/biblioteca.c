@@ -28,14 +28,11 @@ struct ListaUsuarios
 struct Livro
 {
     char *titulo;
-
     Autor *autor;
     Data dataPubli;
-
     int id;
     int status;
-
-    Usuario *usuarioRespo;
+    char *emailResponsavel;
 
     Livro *next;
     Livro *prev;
@@ -68,7 +65,6 @@ struct ListaLivrosAutor
 struct Autor
 {
     char *nome;
-
     ListaLivrosAutor *listaDoAutor;
 };
 
@@ -76,10 +72,12 @@ struct Autor
 
 void addUser(ListaUsuarios *listaUsuarios, char *nome, char *email)
 {
-
     Usuario *new = (Usuario *)malloc(sizeof(Usuario));
     listaUsuarios->qtdUsuarios++; // toda chamada adiciona 1 na qtdUsers
 
+    new->nome = malloc(strlen(nome) + 1);
+    new->email = malloc(strlen(email) + 1);
+    
     strcpy(new->nome, nome);
     strcpy(new->email, email);
     new->next = NULL;
@@ -128,7 +126,8 @@ void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPub
     if (new == NULL) // erro de alocação
         return;
 
-    
+    new->titulo = malloc(strlen(titulo) + 1);
+    new->emailResponsavel = malloc(strlen(emailResponsavel) + 1);
 
 
     strcpy(new->titulo, titulo);
@@ -209,7 +208,7 @@ void buscarPorId(ListaLivros *listaLivros, int id)
                    aux->dataPubli.dia,
                    aux->dataPubli.mes,
                    aux->dataPubli.ano,
-                   aux->usuarioRespo->email);
+                   aux->emailResponsavel);
             mostraStatusLivro(aux);
             return;
         }
@@ -225,7 +224,7 @@ void buscarPorAutor(Autor *autor)
 {
     Livro *aux = NULL;
 
-    for (aux = autor->listaDoAutor->head; aux != NULL; aux = aux->next)
+    for (aux = autor->listaDoAutor->head->livro; aux != NULL; aux = aux->next)
     {
         printf("ID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
                aux->id,
@@ -234,7 +233,7 @@ void buscarPorAutor(Autor *autor)
                aux->dataPubli.dia,
                aux->dataPubli.mes,
                aux->dataPubli.ano,
-               aux->usuarioRespo->email);   
+               aux->emailResponsavel);   
                mostraStatusLivro(aux);
     }
 
@@ -284,7 +283,7 @@ ListaUsuarios *criarListaUsuarios(void)
     return lista;
 }
 
-ListaLivros *criarListasLivros(void)
+ListaLivros *criarListaLivros(void)
 {
     ListaLivros *lista = (ListaLivros*) malloc(sizeof(ListaLivros));
 
@@ -295,7 +294,7 @@ ListaLivros *criarListasLivros(void)
     return lista;
 }
 
-ListaLivrosAutor *criaListaLivrosAutor(void)
+ListaLivrosAutor *criarListaLivrosAutor(void)
 {
     ListaLivrosAutor *lista = (ListaLivrosAutor*) malloc(sizeof(ListaLivrosAutor));
     

@@ -11,7 +11,7 @@ int main(){
     addUser(listaUsers, "Silva", "Silva@gg");
     addUser(listaUsers, "Pescador", "Pescador@gg");
 
-    printf("%d\n", buscaUsuarioPorEmail(listaUsers, "Luan@gg"));
+    printf("%d\n", buscaUsuarioPorEmail(listaUsers, "Luang"));
 
     
     free(listaUsers);

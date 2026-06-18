@@ -1,5 +1,6 @@
 /* Tipos */
 #ifndef BIBLIOTECA_H
+#define BIBLIOTECA_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +33,17 @@ void buscarPorId(ListaLivros *lista, int id);
 void buscarPorAutor(Autor *autor);
 
 int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email);
+
+
+// Funções criar listas
+
+ListaUsuarios *criarListaUsuarios(void);
+ListaLivros *criarListaLivros(void);
+ListaLivrosAutor *criarListaLivrosAutor(void);
+
+// Funções úteis
+
+void mostraStatusLivro(Livro *livro);
 
 
 #endif
