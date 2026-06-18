@@ -1,6 +1,4 @@
 #include "biblioteca.h"
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 struct Data
@@ -122,7 +120,7 @@ void addUser(ListaUsuarios *listaUsuarios, char *nome, char *email)
     listaUsuarios->tail = new;
 }
 
-void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPubli, Usuario *usuarioRespo)
+void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPubli, char *emailResponsavel)
 {
 
     Livro *new = (Livro *)malloc(sizeof(Livro));
@@ -130,17 +128,20 @@ void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPub
     if (new == NULL) // erro de alocação
         return;
 
+    
+
+
     strcpy(new->titulo, titulo);
     new->autor = autor;
     new->dataPubli = dataPubli;
     new->id = listaLivros->qtdLivros;
     new->status = 0;
-    new->usuarioRespo = usuarioRespo;
+    
 
     new->next = NULL;
     new->prev = NULL;
 
-    addLivroAutor(new, autor);
+    addLivroAutor(autor, new);
 
     // caso lista esteja vazia
     if (listaLivros->head == NULL)
@@ -204,7 +205,7 @@ void buscarPorId(ListaLivros *listaLivros, int id)
             printf("ID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
                    aux->id,
                    aux->titulo,
-                   aux->autor,
+                   aux->autor->nome,
                    aux->dataPubli.dia,
                    aux->dataPubli.mes,
                    aux->dataPubli.ano,
@@ -229,7 +230,7 @@ void buscarPorAutor(Autor *autor)
         printf("ID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
                aux->id,
                aux->titulo,
-               aux->autor,
+               aux->autor->nome,
                aux->dataPubli.dia,
                aux->dataPubli.mes,
                aux->dataPubli.ano,
@@ -240,6 +241,21 @@ void buscarPorAutor(Autor *autor)
     printf("Livro não encontrado");
 
     return;
+}
+
+int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email){
+
+    Usuario *aux = NULL;
+
+    for (aux = lista->head; aux != NULL; aux = aux->next)
+    {
+        if (strcmp(aux->email, email) == 0)
+            return 1;
+    }
+
+    printf("Usuário não econtrado.\n");
+
+    return 0;
 }
 
 void mostraStatusLivro(Livro *livro)
