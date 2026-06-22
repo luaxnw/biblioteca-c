@@ -517,7 +517,22 @@ void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             int subOpcao;
             printf("1. Buscar por ID\n");
             printf("2. Buscar por autor\n");
-            scanf("%d", &subOpcao);   
+            scanf("%d", &subOpcao);
+            
+            if (subOpcao == 1)
+            {
+                printf("Informe o ID: ");
+                int ID;
+                scanf("%d", &ID);
+                buscarPorId(listaLivros, ID);
+            }
+            else if (subOpcao == 2)
+            {
+                printf("Informe o nome do autor: ");
+                char nome[30];
+                fgets(nome, sizeof(nome), stdin);
+
+            }
 
             
             break;
