@@ -1,19 +1,42 @@
 #include "biblioteca.h"
 
-int main(){
+int main()
+{
 
+    ListaLivros *listaLivros = criarListaLivros();
+    ListaUsuarios *listaUsuarios = criarListaUsuarios();
 
-    ListaUsuarios *listaUsers = criarListaUsuarios();
-    ListaLivros *listaLiv = criarListaLivros();
+    int opcaoPrincipal = -1;
 
-    addUser(listaUsers, "Luan", "Luan@gg");
-    addUser(listaUsers, "Luiz", "Luiz@gg");
-    addUser(listaUsers, "Silva", "Silva@gg");
-    addUser(listaUsers, "Pescador", "Pescador@gg");
+    do
+    {
 
-    printf("%d\n", buscaUsuarioPorEmail(listaUsers, "Luang"));
+        printf("\n=====BIBLIOTECA DA UFFS=====\n");
+        printf("=====1. CADASTRO=====\n");
+        printf("=====2. CONSULTA=====\n");
+        printf("=====3. ATUALIZAÇÃO DE DADOS=====\n");
+        printf("=====4. EXCLUSÃO=====\n");
+        printf("=====5. EMPRÉSTIMO=====\n");
+        printf("=====6. DEVOLUÇÃO=====\n");
+        printf("=====0. SAIR=====\n");
+        printf("Escolha uma opção\n");
 
-    
-    free(listaUsers);
-    free(listaLiv);
+        scanf("%d", &opcaoPrincipal);
+
+        switch (opcaoPrincipal)
+        {
+        case 1:
+            menuCadastro(listaLivros, listaUsuarios);
+            break;
+
+        default:
+            printf("Opção inválida\n");
+        }
+
+    } while (opcaoPrincipal != 0);
+
+    mostraListaLivros(listaLivros);
+    mostraListaUsuarios(listaUsuarios);
+
+    return 0;
 }
