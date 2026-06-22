@@ -5,6 +5,7 @@ struct Usuario
 {
     char *nome;
     char *email;
+    ListaLivrosUsuario *listaLivros;
 
     Usuario *next;
     Usuario *prev;
@@ -61,6 +62,22 @@ struct Autor
     ListaLivrosAutor *listaDoAutor;
 };
 
+struct LivroUsuario
+{
+    Livro *livro;
+
+    LivroUsuario *next;
+    LivroUsuario *prev;
+};
+
+struct ListaLivrosUsuario
+{
+    LivroUsuario *head;
+    LivroUsuario *tail;
+
+    int qtdLivrosUsuario;
+};
+
 // FUNÇÕES
 
 void addUser(ListaUsuarios *listaUsuarios, char *nome, char *email)
@@ -70,7 +87,7 @@ void addUser(ListaUsuarios *listaUsuarios, char *nome, char *email)
 
     new->nome = malloc(strlen(nome) + 1);
     new->email = malloc(strlen(email) + 1);
-    
+
     strcpy(new->nome, nome);
     strcpy(new->email, email);
     new->next = NULL;
@@ -131,7 +148,6 @@ void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPub
     new->dataPubli = dataPubli;
     new->id = listaLivros->qtdLivros;
     new->status = 0;
-    
 
     new->next = NULL;
     new->prev = NULL;
@@ -193,7 +209,8 @@ void addLivroAutor(Autor *autor, Livro *livro)
     return;
 }
 
-// Funções buscar
+// ===== FUNÇÕES DE BUSCA =====
+
 void buscarPorId(ListaLivros *listaLivros, int id)
 {
     Livro *aux = listaLivros->head;
@@ -217,7 +234,7 @@ void buscarPorId(ListaLivros *listaLivros, int id)
         aux = aux->next;
     }
 
-    printf("Livro não encontrado");
+    printf("Livro não encontrado\n");
 
     return;
 }
@@ -235,17 +252,17 @@ void buscarPorAutor(Autor *autor)
                aux->livro->dataPubli.dia,
                aux->livro->dataPubli.mes,
                aux->livro->dataPubli.ano,
-               aux->livro->emailResponsavel);   
-               mostraStatusLivro(aux->livro);
+               aux->livro->emailResponsavel);
+        mostraStatusLivro(aux->livro);
     }
 
-    printf("Livro não encontrado");
+    printf("\n");
 
     return;
 }
 
-int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email){
-
+int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email)
+{
     Usuario *aux = NULL;
 
     for (aux = lista->head; aux != NULL; aux = aux->next)
@@ -256,13 +273,54 @@ int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email){
     return 0;
 }
 
-// Funções úteis
+void buscaUsuarioPorNome(ListaUsuarios *lista, char *nome)
+{
+    Usuario *aux = NULL;
+
+    for (aux = lista->head; aux != NULL; aux = aux->next)
+    {
+        if (strcmp(aux->nome, nome) == 0)
+        {
+            printf("Nome: %s\nEmail: %s\n", aux->nome, aux->email);
+            return;
+        }
+    }
+    printf("Usuário de nome %s não encontrado.\n", nome);
+    return;
+}
+
+void mostraLivrosEmPosse(ListaUsuarios *lista, char *email)
+{
+    Usuario *aux_1 = NULL;
+    Livro *aux_2 = NULL;
+
+    for (aux_1 = lista->head; aux_1 != NULL; aux_1 = aux_1->next)
+    {
+        if (strcmp(aux_1->email, email) == 0)
+        {
+            for (aux_2 = aux_1->listaLivros->head->livro; aux_2 != NULL; aux_2 = aux_2->next)
+            {
+                printf("ID: %d\nTítulo: %s\nAutor: %s\nData: %d/%d/%d\n",
+                    aux_2->id,
+                    aux_2->titulo,
+                    aux_2->autor->nome,
+                    aux_2->dataPubli.dia,
+                    aux_2->dataPubli.mes,
+                    aux_2->dataPubli.ano);
+            }
+        }
+    }
+
+    return;
+}
+
+// ===== FUNÇÕES ÚTEIS =====
 
 void mostraStatusLivro(Livro *livro)
 {
 
     if (livro->status == 0)
-        printf("Dispoível\n");
+        printf("Disponível\n");
     else
     {
         printf("Indisponível\n");
@@ -293,15 +351,13 @@ void mostraListaUsuarios(ListaUsuarios *lista)
     }
     printf("\nFIM\n");
     return;
-  
 }
 
-
-// Funções criação das listas
+// ===== FUNÇÕES CRIAÇÃO =====
 
 ListaUsuarios *criarListaUsuarios(void)
 {
-    ListaUsuarios *lista = (ListaUsuarios*) malloc(sizeof(ListaUsuarios));
+    ListaUsuarios *lista = (ListaUsuarios *)malloc(sizeof(ListaUsuarios));
 
     if (lista == NULL)
         return NULL;
@@ -315,25 +371,25 @@ ListaUsuarios *criarListaUsuarios(void)
 
 ListaLivros *criarListaLivros(void)
 {
-    ListaLivros *lista = (ListaLivros*) malloc(sizeof(ListaLivros));
+    ListaLivros *lista = (ListaLivros *)malloc(sizeof(ListaLivros));
 
     if (lista == NULL)
         return NULL;
 
     lista->head = NULL;
     lista->tail = NULL;
-    lista->qtdLivros = 0;
+    lista->qtdLivros = 1;
 
     return lista;
 }
 
 ListaLivrosAutor *criarListaLivrosAutor(void)
 {
-    ListaLivrosAutor *lista = (ListaLivrosAutor*) malloc(sizeof(ListaLivrosAutor));
+    ListaLivrosAutor *lista = (ListaLivrosAutor *)malloc(sizeof(ListaLivrosAutor));
 
     if (lista == NULL)
         return NULL;
-    
+
     lista->head = NULL;
     lista->tail = NULL;
     lista->qtdLivrosAutor = 0;
@@ -343,7 +399,7 @@ ListaLivrosAutor *criarListaLivrosAutor(void)
 
 Autor *criaAutor(char *nome)
 {
-    Autor *autor = (Autor*) malloc(sizeof(Autor));
+    Autor *autor = (Autor *)malloc(sizeof(Autor));
 
     if (autor == NULL)
         return NULL;
@@ -356,10 +412,11 @@ Autor *criaAutor(char *nome)
     return autor;
 }
 
-Data criaData(int dia, int mes, int ano){
+Data criaData(int dia, int mes, int ano)
+{
 
     Data data;
-    
+
     data.dia = dia;
     data.mes = mes;
     data.ano = ano;
@@ -367,13 +424,28 @@ Data criaData(int dia, int mes, int ano){
     return data;
 }
 
-// Funções menu
+ListaLivrosUsuario *criaListaLivrosUsuario(void)
+{
+    ListaLivrosUsuario *lista = (ListaLivrosUsuario *)malloc(sizeof(ListaLivrosUsuario));
+
+    if (lista == NULL)
+        return NULL;
+
+    lista->head = NULL;
+    lista->tail = NULL;
+    lista->qtdLivrosUsuario = 0;
+
+    return lista;
+}
+
+// ===== FUNÇÕES MENU =====
 
 void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao;
 
-    do {
+    do
+    {
         printf("\n===CADASTRO===\n");
         printf("1. Livro\n");
         printf("2. Usuário\n");
@@ -386,7 +458,7 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
         case 1:
             char titulo[30], nomeAutor[30];
             int dia, mes, ano;
-            
+
             printf("Título do livro: ");
             getchar();
             fgets(titulo, sizeof(titulo), stdin);
@@ -420,16 +492,42 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             addUser(listaUsuarios, nomeUsuario, emailUsuario);
 
             break;
+
+        default:
+            printf("Opção inválida\n");
+        }
+
+    } while (opcao != 0);
+}
+void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
+{
+    int opcao;
+
+    do
+    {
+        printf("\n===CONSULTA===\n");
+        printf("1. Livros\n");
+        printf("2. Usuários\n");
+        printf("3. Empréstimo\n");
+        printf("0. Sair\n");
+
+        switch (opcao)
+        {
+        case 1:
+            int subOpcao;
+            printf("1. Buscar por ID\n");
+            printf("2. Buscar por autor\n");
+            scanf("%d", &subOpcao);   
+
+            
+            break;
         
         default:
             printf("Opção inválida\n");
         }
 
-
     } while (opcao != 0);
-
 }
-void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 void menuExclusao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
