@@ -80,7 +80,7 @@ struct ListaLivrosUsuario
 
 // FUNÇÕES
 
-void addUser(ListaUsuarios *listaUsuarios, char *nome, char *email)
+void addUsuario(ListaUsuarios *listaUsuarios, char *nome, char *email)
 {
     Usuario *new = (Usuario *)malloc(sizeof(Usuario));
     listaUsuarios->qtdUsuarios++; // toda chamada adiciona 1 na qtdUsers
@@ -220,7 +220,7 @@ void buscarPorId(ListaLivros *listaLivros, int id)
 
         if (aux->id == id)
         {
-            printf("ID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
+            printf("\nID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
                    aux->id,
                    aux->titulo,
                    aux->autor->nome,
@@ -239,41 +239,54 @@ void buscarPorId(ListaLivros *listaLivros, int id)
     return;
 }
 
-void buscarPorAutor(Autor *autor)
+void buscarPorAutor(ListaLivros *lista, char *nome)
 {
-    LivroAutor *aux = NULL;
+    Livro *aux = NULL;
+    int indicadorLogico = 0;
 
-    for (aux = autor->listaDoAutor->head; aux != NULL; aux = aux->next)
+    for (aux = lista->head; aux != NULL; aux = aux->next)
     {
-        printf("ID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
-               aux->livro->id,
-               aux->livro->titulo,
-               aux->livro->autor->nome,
-               aux->livro->dataPubli.dia,
-               aux->livro->dataPubli.mes,
-               aux->livro->dataPubli.ano,
-               aux->livro->emailResponsavel);
-        mostraStatusLivro(aux->livro);
-    }
+        if (strcmp(aux->autor->nome, nome) == 0)
+        {
 
-    printf("\n");
+            printf("\nID: %d\nTítulo: %s\nAutor: %s\nData de publicação: %d/%d/%d\nUsuário responsável: %s\n",
+                   aux->id,
+                   aux->titulo,
+                   aux->autor->nome,
+                   aux->dataPubli.dia,
+                   aux->dataPubli.mes,
+                   aux->dataPubli.ano,
+                   aux->emailResponsavel);
+            mostraStatusLivro(aux);
+            indicadorLogico = 1;
+        }
+    }
+    if (indicadorLogico == 0)
+        printf("Autor não localizado.\n");
 
     return;
 }
 
-int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email)
+void buscarUsuarioPorEmail(ListaUsuarios *lista, char *email)
 {
-    Usuario *aux = NULL;
+    Usuario *aux = lista->head;
 
-    for (aux = lista->head; aux != NULL; aux = aux->next)
+    while (aux != NULL)
     {
+
         if (strcmp(aux->email, email) == 0)
-            return 1;
+        {
+            printf("Nome: %s\nEmail: %s\n", aux->nome, aux->email);
+            return;
+        }
+
+        aux = aux->next;
     }
-    return 0;
+
+    return;
 }
 
-void buscaUsuarioPorNome(ListaUsuarios *lista, char *nome)
+void buscarUsuarioPorNome(ListaUsuarios *lista, char *nome)
 {
     Usuario *aux = NULL;
 
@@ -301,12 +314,12 @@ void mostraLivrosEmPosse(ListaUsuarios *lista, char *email)
             for (aux_2 = aux_1->listaLivros->head->livro; aux_2 != NULL; aux_2 = aux_2->next)
             {
                 printf("ID: %d\nTítulo: %s\nAutor: %s\nData: %d/%d/%d\n",
-                    aux_2->id,
-                    aux_2->titulo,
-                    aux_2->autor->nome,
-                    aux_2->dataPubli.dia,
-                    aux_2->dataPubli.mes,
-                    aux_2->dataPubli.ano);
+                       aux_2->id,
+                       aux_2->titulo,
+                       aux_2->autor->nome,
+                       aux_2->dataPubli.dia,
+                       aux_2->dataPubli.mes,
+                       aux_2->dataPubli.ano);
             }
         }
     }
@@ -438,11 +451,69 @@ ListaLivrosUsuario *criaListaLivrosUsuario(void)
     return lista;
 }
 
+// ===== FUNÇÕES ATUALIZAÇÃO =====
+
+void atualizaLivro(ListaLivros *lista, int ID)
+{
+    Livro *aux = NULL;
+    char tituloLivro[30], nomeAutor[30];
+    int dia = 0, mes = 0, ano = 0;
+    int indicadorLogico = 0;
+
+    for (aux = lista->head; aux != NULL; aux = aux->next)
+    {
+        if (aux->id == ID)
+        {
+            indicadorLogico = 1;
+
+            printf("Informe o novo título ou ENTER para não alterar: ");
+            fgets(tituloLivro, sizeof(tituloLivro), stdin);
+            tituloLivro[strcspn(tituloLivro, "\n")] = '\0';
+
+            if (!(tituloLivro[0] == '\0'))
+            {
+                strcpy(aux->titulo, tituloLivro);
+                printf("Título do livro de ID %d alterado para %s!\n", aux->id, aux->titulo);
+            }
+
+            printf("Informe o novo autor ou ENTER para não alterar: ");
+            getchar();
+            fgets(nomeAutor, sizeof(nomeAutor), stdin);
+            nomeAutor[strcspn(nomeAutor, "\n")] = '\0';
+
+            if (!(nomeAutor[0] == '\0'))
+            {
+                strcpy(aux->autor->nome, nomeAutor);
+                printf("Autor do livro de ID %d alterado para %s!\n", aux->id, aux->autor->nome);
+            }
+
+            printf("Informe a nova data de lançamento ou 0 para não alterar: ");
+            getchar();
+            scanf("%d/%d/%d", &dia, &mes, &ano);
+
+            if (!(dia == 0 || mes == 0 || ano == 0))
+            {
+                aux->dataPubli = criaData(dia, mes, ano);
+                printf("Data de lançamento do livro de ID %d alterada para %d/%d/%d!\n", aux->id,
+                       aux->dataPubli.dia,
+                       aux->dataPubli.mes,
+                       aux->dataPubli.ano);
+            }
+        }
+        
+        return;
+    }
+    if (indicadorLogico == 0)
+        printf("Livro não localizado.\n");
+    
+    return;
+}
+
 // ===== FUNÇÕES MENU =====
 
 void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
-    int opcao;
+    int opcao = -1;
 
     do
     {
@@ -489,8 +560,12 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             fgets(emailUsuario, sizeof(emailUsuario), stdin);
             emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
 
-            addUser(listaUsuarios, nomeUsuario, emailUsuario);
+            addUsuario(listaUsuarios, nomeUsuario, emailUsuario);
 
+            break;
+
+        case 0:
+            printf("Saindo...\n");
             break;
 
         default:
@@ -501,7 +576,8 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 }
 void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
-    int opcao;
+    int opcao = -1, subOpcao = -1, ID = 0;
+    char nomeAutor[30], nomeUsuario[30], emailUsuario[30];
 
     do
     {
@@ -510,33 +586,71 @@ void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
         printf("2. Usuários\n");
         printf("3. Empréstimo\n");
         printf("0. Sair\n");
+        printf("Escolha uma opção\n");
+
+        scanf("%d", &opcao);
 
         switch (opcao)
         {
         case 1:
-            int subOpcao;
             printf("1. Buscar por ID\n");
             printf("2. Buscar por autor\n");
             scanf("%d", &subOpcao);
-            
+
             if (subOpcao == 1)
             {
                 printf("Informe o ID: ");
-                int ID;
                 scanf("%d", &ID);
                 buscarPorId(listaLivros, ID);
             }
             else if (subOpcao == 2)
             {
                 printf("Informe o nome do autor: ");
-                char nome[30];
-                fgets(nome, sizeof(nome), stdin);
-
+                getchar();
+                fgets(nomeAutor, sizeof(nomeAutor), stdin);
+                nomeAutor[strcspn(nomeAutor, "\n")] = '\0';
+                buscarPorAutor(listaLivros, nomeAutor);
             }
 
-            
             break;
-        
+
+        case 2:
+            printf("1. Buscar por nome\n");
+            printf("2. Buscar por email\n");
+            scanf("%d", &subOpcao);
+
+            if (subOpcao == 1)
+            {
+                printf("Informe o nome: ");
+                getchar();
+                fgets(nomeUsuario, sizeof(nomeUsuario), stdin);
+                nomeUsuario[strcspn(nomeUsuario, "\n")] = '\0';
+                buscarUsuarioPorNome(listaUsuarios, nomeUsuario);
+            }
+            else if (subOpcao == 2)
+            {
+                printf("Informe o email: ");
+                getchar();
+                fgets(emailUsuario, sizeof(emailUsuario), stdin);
+                emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
+                buscarUsuarioPorEmail(listaUsuarios, emailUsuario);
+            }
+
+            break;
+
+        case 3:
+            printf("Informe o email: ");
+            getchar();
+            fgets(emailUsuario, sizeof(emailUsuario), stdin);
+            emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
+            mostraLivrosEmPosse(listaUsuarios, emailUsuario);
+
+            break;
+
+        case 0:
+            printf("Saindo...\n");
+            break;
+
         default:
             printf("Opção inválida\n");
         }

@@ -4,8 +4,9 @@ int main()
 {
     ListaLivros *listaLivros = criarListaLivros();
     ListaUsuarios *listaUsuarios = criarListaUsuarios();
-    Autor *autor_1 = criaAutor("Machado de Assis");
-    Autor *autor_2 = criaAutor("Clarice Lispector");
+
+    Autor *autor_1 = criaAutor("machado");
+    Autor *autor_2 = criaAutor("clarice");
     Data data_1 = criaData(20, 03, 1950);
     Data data_2 = criaData(05, 06, 1976);
     Data data_3 = criaData(25, 04, 1980);
@@ -17,23 +18,20 @@ int main()
     addLivro(listaLivros, "Pedra", autor_1, data_2);
     addLivro(listaLivros, "Areia", autor_1, data_3);
 
-    addUser(listaUsuarios, "Ana Silva", "ana.silva@gmail.com");
-    addUser(listaUsuarios, "Bruno Costa", "bruno.costa@hotmail.com");
-    addUser(listaUsuarios, "Camila Rodrigues", "camila.r@outlook.com");
-    addUser(listaUsuarios, "Diego Almeida", "diego.almeida@yahoo.com");
-    addUser(listaUsuarios, "Elena Martins", "elena.martins@gmail.com");
-    addUser(listaUsuarios, "Felipe Santos", "felipe.santos@outlook.com");
+    addLivro(listaLivros, "titulo_1", autor_2, data_4);
+    addLivro(listaLivros, "titulo_2", autor_2, data_5);
+    addLivro(listaLivros, "titulo_3", autor_2, data_6);
 
-    buscaUsuarioPorEmail(listaUsuarios, "ana.silva@gmail.com");
-    printf("%d ", buscaUsuarioPorEmail(listaUsuarios, "ana.silva@gmail.com"));
-    printf("%d ", buscaUsuarioPorEmail(listaUsuarios, "diego.almeida@yahoo.com"));
-    printf("%d ", buscaUsuarioPorEmail(listaUsuarios, "cleber.almeida@yahoo.com"));
+    addUsuario(listaUsuarios, "Ana Silva", "ana.silva@gmail.com");
+    addUsuario(listaUsuarios, "Bruno Costa", "bruno.costa@hotmail.com");
+    addUsuario(listaUsuarios, "Camila Rodrigues", "camila.r@outlook.com");
+    addUsuario(listaUsuarios, "Diego Almeida", "diego.almeida@yahoo.com");
+    addUsuario(listaUsuarios, "Elena Martins", "elena.martins@gmail.com");
+    addUsuario(listaUsuarios, "Felipe Santos", "felipe.santos@outlook.com");
 
-
-    buscaUsuarioPorNome(listaUsuarios, "Ana Silva");
-
+    
     int opcaoPrincipal = -1;
-    /*
+    
     do
     {
 
@@ -54,16 +52,17 @@ int main()
         case 1:
             menuCadastro(listaLivros, listaUsuarios);
             break;
+        case 2:
+            menuConsulta(listaLivros, listaUsuarios);
+            break;
+        
+        
 
         default:
             printf("Opção inválida\n");
         }
 
     } while (opcaoPrincipal != 0);
-    */
-
-    // mostraListaLivros(listaLivros);
-    // mostraListaUsuarios(listaUsuarios);
 
     return 0;
 }

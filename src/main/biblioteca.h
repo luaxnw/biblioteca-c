@@ -28,7 +28,7 @@ typedef struct ListaLivrosUsuario ListaLivrosUsuario;
 
 // ===== FUNÇÕES DE CADASTRO =====
 
-void addUser(ListaUsuarios *lista, char *nome, char *email);
+void addUsuario(ListaUsuarios *lista, char *nome, char *email);
 
 void addLivro(ListaLivros *lista, char *titulo, Autor *autor, Data dataPubli);
 
@@ -39,11 +39,11 @@ void addLivroAutor(Autor *autor, Livro *livro);
 
 void buscarPorId(ListaLivros *lista, int id);
 
-void buscarPorAutor(Autor *autor);
+void buscarPorAutor(ListaLivros *lista, char *nome);
 
-int buscaUsuarioPorEmail(ListaUsuarios *lista, char *email);
+void buscarUsuarioPorEmail(ListaUsuarios *lista, char *email);
 
-void buscaUsuarioPorNome(ListaUsuarios *lista, char *nome);
+void buscarUsuarioPorNome(ListaUsuarios *lista, char *nome);
 
 void mostraLivrosEmPosse(ListaUsuarios *lista, char *email);
 
@@ -70,6 +70,11 @@ void mostraStatusLivro(Livro *livro);
 void mostraListaLivros(ListaLivros *lista);
 
 void mostraListaUsuarios(ListaUsuarios *lista);
+
+// ===== FUNÇÕES ATUALIZAÇÃO =====
+
+void atualizaLivro(ListaLivros *lista, int ID);
+
 
 
 // ===== FUNÇÕES MENU =====
