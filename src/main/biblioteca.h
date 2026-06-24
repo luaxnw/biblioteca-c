@@ -2,6 +2,9 @@
 #ifndef BIBLIOTECA_H
 #define BIBLIOTECA_H
 
+#define SIZE_TITULO 50
+#define SIZE_NOME 30
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,9 +31,9 @@ typedef struct ListaLivrosUsuario ListaLivrosUsuario;
 
 // ===== FUNÇÕES DE CADASTRO =====
 
-void addUsuario(ListaUsuarios *lista, char *nome, char *email);
+void addUsuario(ListaUsuarios *lista, char nome[SIZE_NOME], char email[SIZE_NOME]);
 
-void addLivro(ListaLivros *lista, char *titulo, Autor *autor, Data dataPubli);
+void addLivro(ListaLivros *lista, char titulo[SIZE_TITULO], Autor *autor, Data dataPubli);
 
 void addLivroAutor(Autor *autor, Livro *livro);
 
@@ -39,13 +42,13 @@ void addLivroAutor(Autor *autor, Livro *livro);
 
 void buscarPorId(ListaLivros *lista, int id);
 
-void buscarPorAutor(ListaLivros *lista, char *nome);
+void buscarPorAutor(ListaLivros *lista, char nome[SIZE_NOME]);
 
-void buscarUsuarioPorEmail(ListaUsuarios *lista, char *email);
+void buscarUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME]);
 
-void buscarUsuarioPorNome(ListaUsuarios *lista, char *nome);
+void buscarUsuarioPorNome(ListaUsuarios *lista, char nome[SIZE_NOME]);
 
-void mostraLivrosEmPosse(ListaUsuarios *lista, char *email);
+void mostraLivrosEmPosse(ListaUsuarios *lista, char email[SIZE_NOME]);
 
 
 // ===== FUNÇÕES CRIAÇÃO =====
@@ -56,7 +59,7 @@ ListaLivros *criarListaLivros(void);
 
 ListaLivrosAutor *criarListaLivrosAutor(void);
 
-Autor *criaAutor(char *nome);
+Autor *criaAutor(char nome[SIZE_NOME]);
 
 Data criaData(int dia, int mes, int ano);
 
@@ -74,6 +77,9 @@ void mostraListaUsuarios(ListaUsuarios *lista);
 // ===== FUNÇÕES ATUALIZAÇÃO =====
 
 void atualizaLivro(ListaLivros *lista, int ID);
+
+void atualizaUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME]);
+
 
 
 

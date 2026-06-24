@@ -28,6 +28,9 @@ int main()
     addUsuario(listaUsuarios, "Diego Almeida", "diego.almeida@yahoo.com");
     addUsuario(listaUsuarios, "Elena Martins", "elena.martins@gmail.com");
     addUsuario(listaUsuarios, "Felipe Santos", "felipe.santos@outlook.com");
+    addUsuario(listaUsuarios, "roger", "roger.com");
+
+    atualizaUsuario(listaUsuarios, "roger.com");
 
     
     int opcaoPrincipal = -1;
@@ -55,7 +58,9 @@ int main()
         case 2:
             menuConsulta(listaLivros, listaUsuarios);
             break;
-        
+        case 3:
+            menuAtualizacao(listaLivros, listaUsuarios);
+            break;
         
 
         default:

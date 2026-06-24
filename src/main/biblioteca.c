@@ -3,8 +3,8 @@
 
 struct Usuario
 {
-    char *nome;
-    char *email;
+    char nome[SIZE_NOME];
+    char email[SIZE_NOME];
     ListaLivrosUsuario *listaLivros;
 
     Usuario *next;
@@ -21,12 +21,12 @@ struct ListaUsuarios
 
 struct Livro
 {
-    char *titulo;
+    char titulo[SIZE_TITULO];
     Autor *autor;
     Data dataPubli;
     int id;
     int status;
-    char *emailResponsavel;
+    char emailResponsavel[SIZE_NOME];
 
     Livro *next;
     Livro *prev;
@@ -58,7 +58,7 @@ struct ListaLivrosAutor
 
 struct Autor
 {
-    char *nome;
+    char nome[SIZE_NOME];
     ListaLivrosAutor *listaDoAutor;
 };
 
@@ -80,13 +80,10 @@ struct ListaLivrosUsuario
 
 // FUNÇÕES
 
-void addUsuario(ListaUsuarios *listaUsuarios, char *nome, char *email)
+void addUsuario(ListaUsuarios *listaUsuarios, char nome[SIZE_NOME], char email[SIZE_NOME])
 {
     Usuario *new = (Usuario *)malloc(sizeof(Usuario));
     listaUsuarios->qtdUsuarios++; // toda chamada adiciona 1 na qtdUsers
-
-    new->nome = malloc(strlen(nome) + 1);
-    new->email = malloc(strlen(email) + 1);
 
     strcpy(new->nome, nome);
     strcpy(new->email, email);
@@ -132,7 +129,7 @@ void addUsuario(ListaUsuarios *listaUsuarios, char *nome, char *email)
     return;
 }
 
-void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPubli)
+void addLivro(ListaLivros *listaLivros, char titulo[SIZE_TITULO], Autor *autor, Data dataPubli)
 {
 
     Livro *new = (Livro *)malloc(sizeof(Livro));
@@ -140,10 +137,8 @@ void addLivro(ListaLivros *listaLivros, char *titulo, Autor *autor, Data dataPub
     if (new == NULL) // erro de alocação
         return;
 
-    new->titulo = malloc(strlen(titulo) + 1);
-
     strcpy(new->titulo, titulo);
-    new->emailResponsavel = '\0';
+    strcpy(new->emailResponsavel, "");
     new->autor = autor;
     new->dataPubli = dataPubli;
     new->id = listaLivros->qtdLivros;
@@ -239,7 +234,7 @@ void buscarPorId(ListaLivros *listaLivros, int id)
     return;
 }
 
-void buscarPorAutor(ListaLivros *lista, char *nome)
+void buscarPorAutor(ListaLivros *lista, char nome[SIZE_NOME])
 {
     Livro *aux = NULL;
     int indicadorLogico = 0;
@@ -267,7 +262,7 @@ void buscarPorAutor(ListaLivros *lista, char *nome)
     return;
 }
 
-void buscarUsuarioPorEmail(ListaUsuarios *lista, char *email)
+void buscarUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME])
 {
     Usuario *aux = lista->head;
 
@@ -286,7 +281,7 @@ void buscarUsuarioPorEmail(ListaUsuarios *lista, char *email)
     return;
 }
 
-void buscarUsuarioPorNome(ListaUsuarios *lista, char *nome)
+void buscarUsuarioPorNome(ListaUsuarios *lista, char nome[SIZE_NOME])
 {
     Usuario *aux = NULL;
 
@@ -302,7 +297,7 @@ void buscarUsuarioPorNome(ListaUsuarios *lista, char *nome)
     return;
 }
 
-void mostraLivrosEmPosse(ListaUsuarios *lista, char *email)
+void mostraLivrosEmPosse(ListaUsuarios *lista, char email[SIZE_NOME])
 {
     Usuario *aux_1 = NULL;
     Livro *aux_2 = NULL;
@@ -410,14 +405,12 @@ ListaLivrosAutor *criarListaLivrosAutor(void)
     return lista;
 }
 
-Autor *criaAutor(char *nome)
+Autor *criaAutor(char nome[SIZE_NOME])
 {
     Autor *autor = (Autor *)malloc(sizeof(Autor));
 
     if (autor == NULL)
         return NULL;
-
-    autor->nome = malloc(strlen(nome) + 1);
 
     strcpy(autor->nome, nome);
     autor->listaDoAutor = criarListaLivrosAutor();
@@ -456,7 +449,7 @@ ListaLivrosUsuario *criaListaLivrosUsuario(void)
 void atualizaLivro(ListaLivros *lista, int ID)
 {
     Livro *aux = NULL;
-    char tituloLivro[30], nomeAutor[30];
+    char tituloLivro[SIZE_TITULO], nomeAutor[SIZE_NOME];
     int dia = 0, mes = 0, ano = 0;
     int indicadorLogico = 0;
 
@@ -467,6 +460,7 @@ void atualizaLivro(ListaLivros *lista, int ID)
             indicadorLogico = 1;
 
             printf("Informe o novo título ou ENTER para não alterar: ");
+            getchar();
             fgets(tituloLivro, sizeof(tituloLivro), stdin);
             tituloLivro[strcspn(tituloLivro, "\n")] = '\0';
 
@@ -477,7 +471,6 @@ void atualizaLivro(ListaLivros *lista, int ID)
             }
 
             printf("Informe o novo autor ou ENTER para não alterar: ");
-            getchar();
             fgets(nomeAutor, sizeof(nomeAutor), stdin);
             nomeAutor[strcspn(nomeAutor, "\n")] = '\0';
 
@@ -488,7 +481,6 @@ void atualizaLivro(ListaLivros *lista, int ID)
             }
 
             printf("Informe a nova data de lançamento ou 0 para não alterar: ");
-            getchar();
             scanf("%d/%d/%d", &dia, &mes, &ano);
 
             if (!(dia == 0 || mes == 0 || ano == 0))
@@ -499,13 +491,53 @@ void atualizaLivro(ListaLivros *lista, int ID)
                        aux->dataPubli.mes,
                        aux->dataPubli.ano);
             }
+            break;
         }
-        
-        return;
     }
     if (indicadorLogico == 0)
         printf("Livro não localizado.\n");
-    
+
+    return;
+}
+
+void atualizaUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME])
+{
+    Usuario *aux = NULL;
+    char nome[SIZE_NOME], email[SIZE_NOME];
+    int indicadorLogico = 0;
+
+    for (aux = lista->head; aux != NULL; aux = aux->next)
+    {
+        if (strcmp(aux->email, emailUsuario) == 0)
+        {
+            indicadorLogico = 1;
+
+            printf("Informe o novo nome do usuário ou ENTER para não alterar: ");
+            fgets(nome, sizeof(nome), stdin);
+            nome[strcspn(nome, "\n")] = '\0';
+
+            if (!(nome[0] == '\0'))
+            {
+                strcpy(aux->nome, nome);
+                printf("Nome do usuário alterado para %s!\n", aux->nome);
+            }
+
+            printf("Informe o novo email do usuário ou ENTER para não alterar: ");
+            fgets(email, sizeof(email), stdin);
+            email[strcspn(email, "\n")] = '\0';
+
+            if (!(email[0] == '\0'))
+            {
+                strcpy(aux->email, email);
+                printf("Email do usuário alterado para %s!\n", aux->email);
+            }
+
+            break;
+        }
+    }
+    if (indicadorLogico == 0)
+        printf("Usuário não localizado.\n");
+
     return;
 }
 
@@ -527,7 +559,7 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
         switch (opcao)
         {
         case 1:
-            char titulo[30], nomeAutor[30];
+            char titulo[SIZE_TITULO], nomeAutor[SIZE_NOME];
             int dia, mes, ano;
 
             printf("Título do livro: ");
@@ -549,7 +581,7 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             break;
 
         case 2:
-            char nomeUsuario[30], emailUsuario[30];
+            char nomeUsuario[SIZE_NOME], emailUsuario[SIZE_NOME];
 
             printf("Nome do usuário: ");
             getchar();
@@ -577,7 +609,7 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao = -1, subOpcao = -1, ID = 0;
-    char nomeAutor[30], nomeUsuario[30], emailUsuario[30];
+    char nomeAutor[SIZE_NOME], nomeUsuario[SIZE_NOME], emailUsuario[SIZE_NOME];
 
     do
     {
@@ -657,7 +689,46 @@ void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 
     } while (opcao != 0);
 }
-void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
+void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
+{
+    int opcao = -1, ID = 0;
+    char emailUsuario[SIZE_NOME];
+
+    do
+    {
+        printf("\n===ATUALIZAÇÃO===\n");
+        printf("1. Livro\n");
+        printf("2. Usuário\n");
+        printf("0. Voltar\n");
+        printf("Opção: ");
+
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            printf("Informe o ID do livro: ");
+            scanf("%d", &ID);
+            atualizaLivro(listaLivros, ID);
+            break;
+
+        case 2:
+            printf("Informe o email do usuário: ");
+            getchar();
+            fgets(emailUsuario, sizeof(emailUsuario), stdin);
+            atualizaUsuario(listaUsuarios, emailUsuario);
+            printf("%s", emailUsuario);
+            break;
+        case 0:
+            printf("Saindo...\n");
+            break;
+
+        default:
+            printf("Opção inválida\n");
+        }
+
+    } while (opcao != 0);
+}
 void menuExclusao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 void menuDevolucao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
