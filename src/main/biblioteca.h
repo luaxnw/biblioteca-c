@@ -29,21 +29,17 @@ typedef struct ListaLivrosAutor ListaLivrosAutor;
 typedef struct LivroUsuario LivroUsuario; 
 typedef struct ListaLivrosUsuario ListaLivrosUsuario;
 
-typedef struct nodoBST nodoBST;
-typedef struct BST BST;
 
 // ===== FUNÇÕES DE CADASTRO =====
 
 void addUsuario(ListaUsuarios *lista, char nome[SIZE_NOME], char email[SIZE_NOME]);
 
-void addLivro(ListaLivros *lista, char titulo[SIZE_TITULO], Autor *autor, Data dataPubli, BST *arvore);
+void addLivro(ListaLivros *lista, char titulo[SIZE_TITULO], Autor *autor, Data dataPubli);
 
 void addLivroAutor(Autor *autor, Livro *livro);
 
 
 // ===== FUNÇÕES DE BUSCA =====
-
-void buscarPorId(ListaLivros *lista, int id);
 
 void buscarPorAutor(ListaLivros *lista, char nome[SIZE_NOME]);
 
@@ -73,23 +69,9 @@ ListaLivrosUsuario *criaListaLivrosUsuario(void);
 
 void mostraStatusLivro(Livro *livro);
 
-void mostraListaLivros(ListaLivros *lista);
-
-void mostraListaUsuarios(ListaUsuarios *lista);
+Livro *buscarPorId(ListaLivros *lista, int id);
 
 Usuario *procuraUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME]);
-
-// ===== FUNÇÕES BST ===== 
-
-BST *criaArvore(void);
-
-nodoBST *criarNodoBST(Livro *livro);
-
-nodoBST *inserirBSTLivro(nodoBST *raiz, nodoBST *new);
-
-Livro *buscarLivroBST(nodoBST *raiz, int id);
-
-Livro *buscarBST(BST *arvore, int id);
 
 
 // ===== FUNÇÕES ATUALIZAÇÃO =====
@@ -101,7 +83,7 @@ void atualizaUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME]);
 
 // ===== FUNÇÕES MENU =====
 
-void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios, BST *arvore);
+void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 
 void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
 

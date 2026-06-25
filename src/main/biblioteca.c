@@ -78,19 +78,6 @@ struct ListaLivrosUsuario
     int qtdLivrosUsuario;
 };
 
-struct BST
-{
-    nodoBST *raiz;
-};
-
-struct nodoBST
-{
-    int id;
-    Livro *livro;
-
-    nodoBST *esq;
-    nodoBST *dir;
-};
 
 // FUNÇÕES
 
@@ -143,9 +130,8 @@ void addUsuario(ListaUsuarios *listaUsuarios, char nome[SIZE_NOME], char email[S
     return;
 }
 
-void addLivro(ListaLivros *listaLivros, char titulo[SIZE_TITULO], Autor *autor, Data dataPubli, BST *arvore)
+void addLivro(ListaLivros *listaLivros, char titulo[SIZE_TITULO], Autor *autor, Data dataPubli)
 {
-
     Livro *new = (Livro *)malloc(sizeof(Livro));
 
     if (new == NULL) // erro de alocação
@@ -170,8 +156,6 @@ void addLivro(ListaLivros *listaLivros, char titulo[SIZE_TITULO], Autor *autor, 
         listaLivros->tail = new;
         listaLivros->qtdLivros++;
 
-        arvore->raiz = inserirBSTLivro(arvore->raiz, criarNodoBST(new));
-
         printf("Livro cadastrado\n");
         return;
     }
@@ -184,7 +168,6 @@ void addLivro(ListaLivros *listaLivros, char titulo[SIZE_TITULO], Autor *autor, 
 
     printf("Livro cadastrado\n");
 
-    inserirBSTLivro(arvore->raiz, criarNodoBST(new));
     return;
 }
 
@@ -224,17 +207,23 @@ void addLivroAutor(Autor *autor, Livro *livro)
 
 // ===== FUNÇÕES DE BUSCA =====
 
-Livro *buscarPorId(BST *arvore, int id)
+void mostrarLivroPorID(ListaLivros *lista, int id)
 {
-    Livro *aux = buscarBST(arvore, id);
+    Livro *aux = NULL;
 
-    if (aux == NULL)
+    if (aux != NULL)
     {
-        printf("Livro não encontrado\n");
-        return NULL;
+        printf("ID: %d\nTítulo: %s\nAutor: %s\nData de lançamento: %d/%d/%d\n",
+               aux->id,
+               aux->titulo,
+               aux->autor->nome,
+               aux->dataPubli.dia,
+               aux->dataPubli.mes,
+               aux->dataPubli.ano);
+        mostraStatusLivro(aux);
+        return;
     }
-
-    return aux;
+    return;
 }
 
 void buscarPorAutor(ListaLivros *lista, char nome[SIZE_NOME])
@@ -334,28 +323,19 @@ void mostraStatusLivro(Livro *livro)
     return;
 }
 
-void mostraListaLivros(ListaLivros *lista)
+Livro *buscarPorId(ListaLivros *lista, int id)
 {
     Livro *aux = NULL;
 
     for (aux = lista->head; aux != NULL; aux = aux->next)
     {
-        printf("%s, %s, %d", aux->autor->nome, aux->titulo, aux->id);
+        if (aux->id == id)
+            return aux;
     }
-    printf("\nFIM\n");
-    return;
-}
 
-void mostraListaUsuarios(ListaUsuarios *lista)
-{
-    Usuario *aux = NULL;
-
-    for (aux = lista->head; aux != NULL; aux = aux->next)
-    {
-        printf("%s, %s", aux->nome, aux->email);
-    }
-    printf("\nFIM\n");
-    return;
+    printf("Livro não encontrado.\n");
+    F
+    return NULL;
 }
 
 Usuario *procuraUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME])
@@ -524,9 +504,8 @@ void atualizaLivro(ListaLivros *lista, int ID, BST *arvore)
     char tituloLivro[SIZE_TITULO], nomeAutor[SIZE_NOME];
     int dia = 0, mes = 0, ano = 0;
 
-    if (!aux == NULL)
+    if (aux != NULL)
     {
-
         printf("Informe o novo título ou ENTER para não alterar: ");
         getchar();
         fgets(tituloLivro, sizeof(tituloLivro), stdin);
