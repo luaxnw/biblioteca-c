@@ -26,10 +26,6 @@ typedef struct ListaLivros ListaLivros;
 typedef struct LivroAutor LivroAutor;
 typedef struct ListaLivrosAutor ListaLivrosAutor;
 
-typedef struct LivroUsuario LivroUsuario; 
-typedef struct ListaLivrosUsuario ListaLivrosUsuario;
-
-
 // ===== FUNÇÕES DE CADASTRO =====
 
 void addUsuario(ListaUsuarios *lista, char nome[SIZE_NOME], char email[SIZE_NOME]);
@@ -62,9 +58,6 @@ Autor *criaAutor(char nome[SIZE_NOME]);
 
 Data criaData(int dia, int mes, int ano);
 
-ListaLivrosUsuario *criaListaLivrosUsuario(void);
-
-
 // ===== FUNÇÕES ÚTEIS =====
 
 void mostraStatusLivro(Livro *livro);
@@ -79,6 +72,14 @@ Usuario *procuraUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME]);
 void atualizaLivro(ListaLivros *lista, int ID);
 
 void atualizaUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME]);
+
+// ===== FUNÇÕES EXCLUSÃO =====
+
+void removeLivro(ListaLivros *lista, int ID);
+
+void removeLivroAutor(Autor *autor, Livro *livro);
+
+void removeUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME]);
 
 
 // ===== FUNÇÕES MENU =====
