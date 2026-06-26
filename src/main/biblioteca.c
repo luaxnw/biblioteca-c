@@ -78,7 +78,6 @@ struct ListaLivrosUsuario
     int qtdLivrosUsuario;
 };
 
-
 // FUNÇÕES
 
 void addUsuario(ListaUsuarios *listaUsuarios, char nome[SIZE_NOME], char email[SIZE_NOME])
@@ -104,21 +103,15 @@ void addUsuario(ListaUsuarios *listaUsuarios, char nome[SIZE_NOME], char email[S
         return;
     }
 
-    Usuario *aux = listaUsuarios->head;
-
     // percorre toda a lista verificando se o email fornecido já está
     // no sistema
 
-    while (aux != NULL)
+    Usuario *aux = procuraUsuarioPorEmail(listaUsuarios, email);
+
+    if (aux != NULL)
     {
-
-        if (strcmp(aux->email, email) == 0)
-        {
-            printf("Email não cadastrado!\nO email que você está tentando cadastrar já consta no sistema.\n");
-            return;
-        }
-
-        aux = aux->next;
+        printf("Email não cadastrado!\nO email que você está tentando cadastrar já consta no sistema.\n");
+        return;
     }
 
     // adiciona no final
@@ -207,20 +200,18 @@ void addLivroAutor(Autor *autor, Livro *livro)
 
 // ===== FUNÇÕES DE BUSCA =====
 
-void mostrarLivroPorID(ListaLivros *lista, int id)
+void mostrarLivro(Livro *livro)
 {
-    Livro *aux = NULL;
-
-    if (aux != NULL)
+    if (livro != NULL)
     {
         printf("ID: %d\nTítulo: %s\nAutor: %s\nData de lançamento: %d/%d/%d\n",
-               aux->id,
-               aux->titulo,
-               aux->autor->nome,
-               aux->dataPubli.dia,
-               aux->dataPubli.mes,
-               aux->dataPubli.ano);
-        mostraStatusLivro(aux);
+               livro->id,
+               livro->titulo,
+               livro->autor->nome,
+               livro->dataPubli.dia,
+               livro->dataPubli.mes,
+               livro->dataPubli.ano);
+        mostraStatusLivro(livro);
         return;
     }
     return;
@@ -260,8 +251,6 @@ void buscarUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME])
 
     if (usuario != NULL)
         printf("Nome: %s\nEmail: %s\n", usuario->nome, usuario->email);
-    else
-        printf("Usuário não encontrado.\n");
 }
 
 void buscarUsuarioPorNome(ListaUsuarios *lista, char nome[SIZE_NOME])
@@ -285,13 +274,7 @@ void mostraLivrosEmPosse(ListaUsuarios *lista, char email[SIZE_NOME])
     Usuario *aux_1 = procuraUsuarioPorEmail(lista, email);
     Livro *aux_2 = NULL;
 
-    if (aux_1 == NULL)
-    {
-        printf("Usuário não encontrado.\n");
-        return;
-    }
-
-    else
+    if (aux_1 != NULL)
     {
         for (aux_2 = aux_1->listaLivros->head->livro; aux_2 != NULL; aux_2 = aux_2->next)
         {
@@ -334,7 +317,7 @@ Livro *buscarPorId(ListaLivros *lista, int id)
     }
 
     printf("Livro não encontrado.\n");
-    F
+
     return NULL;
 }
 
@@ -349,68 +332,7 @@ Usuario *procuraUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME])
 
         aux = aux->next;
     }
-
     return NULL;
-}
-
-// ===== FUNÇÕES BST =====
-
-BST *criaArvore(void)
-{
-    BST *arvore = (BST *)malloc(sizeof(BST));
-
-    if (arvore == NULL)
-        return NULL;
-
-    arvore->raiz = NULL;
-
-    return arvore;
-}
-
-nodoBST *criarNodoBST(Livro *livro)
-{
-    nodoBST *new = (nodoBST *)malloc(sizeof(nodoBST));
-
-    new->livro = livro;
-    new->id = livro->id;
-    new->dir = NULL;
-    new->esq = NULL;
-
-    return new;
-}
-
-nodoBST *inserirBSTLivro(nodoBST *raiz, nodoBST *new)
-{
-    if (raiz == NULL)
-        return new;
-
-    if (new->id <= raiz->id)
-        raiz->esq = inserirBSTLivro(raiz->esq, new);
-    else
-    {
-        raiz->dir = inserirBSTLivro(raiz->dir, new);
-    }
-
-    return raiz;
-}
-
-Livro *buscarLivroBST(nodoBST *raiz, int id)
-{
-    if (raiz == NULL)
-        return NULL;
-
-    if (raiz->id == id)
-        return raiz->livro;
-
-    if (id < raiz->id)
-        return buscarLivroBST(raiz->esq, id);
-
-    return buscarLivroBST(raiz->dir, id);
-}
-
-Livro *buscarBST(BST *arvore, int id)
-{
-    return buscarLivroBST(arvore->raiz, id);
 }
 
 // ===== FUNÇÕES CRIAÇÃO =====
@@ -498,9 +420,9 @@ ListaLivrosUsuario *criaListaLivrosUsuario(void)
 
 // ===== FUNÇÕES ATUALIZAÇÃO =====
 
-void atualizaLivro(ListaLivros *lista, int ID, BST *arvore)
+void atualizaLivro(ListaLivros *lista, int ID)
 {
-    Livro *aux = buscarLivroBST(arvore->raiz, ID);
+    Livro *aux = buscarPorId(lista, ID);
     char tituloLivro[SIZE_TITULO], nomeAutor[SIZE_NOME];
     int dia = 0, mes = 0, ano = 0;
 
@@ -548,36 +470,37 @@ void atualizaUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME])
 
     Usuario *aux = procuraUsuarioPorEmail(lista, emailUsuario);
 
-    if (aux == NULL)
+    if (aux != NULL)
+    {
+        printf("Informe o novo nome do usuário ou ENTER para não alterar: ");
+        fgets(nome, sizeof(nome), stdin);
+        nome[strcspn(nome, "\n")] = '\0';
+
+        if (nome[0] != '\0')
+        {
+            strcpy(aux->nome, nome);
+            printf("Nome do usuário alterado para %s!\n", aux->nome);
+        }
+
+        printf("Informe o novo email do usuário ou ENTER para não alterar: ");
+        fgets(email, sizeof(email), stdin);
+        email[strcspn(email, "\n")] = '\0';
+
+        if (email[0] != '\0')
+        {
+            strcpy(aux->email, email);
+            printf("Email do usuário alterado para %s!\n", aux->email);
+        }
+    }
+    else
     {
         printf("Usuário não localizado.\n");
-        return;
-    }
-
-    printf("Informe o novo nome do usuário ou ENTER para não alterar: ");
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome, "\n")] = '\0';
-
-    if (nome[0] != '\0')
-    {
-        strcpy(aux->nome, nome);
-        printf("Nome do usuário alterado para %s!\n", aux->nome);
-    }
-
-    printf("Informe o novo email do usuário ou ENTER para não alterar: ");
-    fgets(email, sizeof(email), stdin);
-    email[strcspn(email, "\n")] = '\0';
-
-    if (email[0] != '\0')
-    {
-        strcpy(aux->email, email);
-        printf("Email do usuário alterado para %s!\n", aux->email);
     }
 }
 
 // ===== FUNÇÕES MENU =====
 
-void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios, BST *arvore)
+void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao = -1;
 
@@ -610,7 +533,7 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios, BST *a
             scanf("%d/%d/%d", &dia, &mes, &ano);
             Data dataLancamento = criaData(dia, mes, ano);
 
-            addLivro(listaLivros, titulo, autor, dataLancamento, arvore);
+            addLivro(listaLivros, titulo, autor, dataLancamento);
 
             break;
 
@@ -667,7 +590,7 @@ void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             {
                 printf("Informe o ID: ");
                 scanf("%d", &ID);
-                buscarPorId(listaLivros, ID);
+                mostrarLivro(buscarPorId(listaLivros, ID));
             }
             else if (subOpcao == 2)
             {
@@ -723,7 +646,7 @@ void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 
     } while (opcao != 0);
 }
-void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios, BST *arvore)
+void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao = -1, ID = 0;
     char emailUsuario[SIZE_NOME];
@@ -743,16 +666,17 @@ void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios, BST
         case 1:
             printf("Informe o ID do livro: ");
             scanf("%d", &ID);
-            atualizaLivro(listaLivros, ID, arvore);
+            atualizaLivro(listaLivros, ID);
             break;
 
         case 2:
             printf("Informe o email do usuário: ");
             getchar();
             fgets(emailUsuario, sizeof(emailUsuario), stdin);
+            emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
             atualizaUsuario(listaUsuarios, emailUsuario);
-            printf("%s", emailUsuario);
             break;
+
         case 0:
             printf("Saindo...\n");
             break;

@@ -4,7 +4,6 @@ int main()
 {
     ListaLivros *listaLivros = criarListaLivros();
     ListaUsuarios *listaUsuarios = criarListaUsuarios();
-    BST *arvore = criaArvore();
 
     Autor *autor_1 = criaAutor("machado");
     Autor *autor_2 = criaAutor("clarice");
@@ -15,13 +14,13 @@ int main()
     Data data_5 = criaData(28, 02, 1899);
     Data data_6 = criaData(04, 07, 1970);
 
-    addLivro(listaLivros, "Água", autor_1, data_1, arvore);
-    addLivro(listaLivros, "Pedra", autor_1, data_2, arvore);
-    addLivro(listaLivros, "Areia", autor_1, data_3, arvore);
+    addLivro(listaLivros, "Água", autor_1, data_1);
+    addLivro(listaLivros, "Pedra", autor_1, data_2);
+    addLivro(listaLivros, "Areia", autor_1, data_3);
 
-    addLivro(listaLivros, "titulo_1", autor_2, data_4, arvore);
-    addLivro(listaLivros, "titulo_2", autor_2, data_5, arvore);
-    addLivro(listaLivros, "titulo_3", autor_2, data_6, arvore);
+    addLivro(listaLivros, "titulo_1", autor_2, data_4);
+    addLivro(listaLivros, "titulo_2", autor_2, data_5);
+    addLivro(listaLivros, "titulo_3", autor_2, data_6);
 
     addUsuario(listaUsuarios, "Ana Silva", "ana.silva@gmail.com");
     addUsuario(listaUsuarios, "Bruno Costa", "bruno.costa@hotmail.com");
@@ -53,7 +52,7 @@ int main()
         switch (opcaoPrincipal)
         {
         case 1:
-            menuCadastro(listaLivros, listaUsuarios, arvore);
+            menuCadastro(listaLivros, listaUsuarios);
             break;
         case 2:
             menuConsulta(listaLivros, listaUsuarios);
@@ -63,6 +62,9 @@ int main()
             break;
         
 
+        case 0:
+            printf("Saindo...\n");
+            
         default:
             printf("Opção inválida\n");
         }
