@@ -252,17 +252,22 @@ void buscarUsuarioPorNome(ListaUsuarios *lista, char nome[SIZE_NOME])
     return;
 }
 
-void mostraLivrosEmPosse(ListaUsuarios *lista, char email[SIZE_NOME])
+void mostraLivrosEmPosse(ListaUsuarios *listaUsuarios, ListaLivros *listaLivros, char email[SIZE_NOME])
 {
-    Usuario *aux_1 = procuraUsuarioPorEmail(lista, email);
+    Usuario *aux_1 = procuraUsuarioPorEmail(listaUsuarios, email);
     Livro *aux_2 = NULL;
 
-    if (aux_1 != NULL)
+    if (aux_1 == NULL)
     {
-        for (aux_2 = aux_1->listaLivros->head->livro; aux_2 != NULL; aux_2 = aux_2->next)
+        printf("Usuário não localizado.\n");
+        return;
+    }
+
+    for (aux_2 = listaLivros->head; aux_2 != NULL; aux_2 = aux_2->next)
+    {
+        if (strcmp(aux_2->emailResponsavel, aux_1->email) == 0)
         {
-            printf("ID: %d\nTítulo: %s\nAutor: %s\nData: %d/%d/%d\n",
-                   aux_2->id,
+            printf("ID: %d\nTítulo: %s\nAutor: %s\nData de lançamento: %d/%d/%d\n", aux_2->id,
                    aux_2->titulo,
                    aux_2->autor->nome,
                    aux_2->dataPubli.dia,
@@ -474,9 +479,10 @@ void removeLivro(ListaLivros *lista, int ID)
     Livro *aux = buscarPorId(lista, ID);
 
     if (aux == NULL)
+    {
+        printf("Livro não encontraoo.\n");
         return;
-
-    // Remove da lista geral de livros
+    }
 
     if (aux->prev == NULL)
     {
@@ -500,13 +506,13 @@ void removeLivro(ListaLivros *lista, int ID)
 
     lista->qtdLivros--;
 
-    // Remove da lista de livros do autor
+    // remove da lista de livros do autor
 
     removeLivroAutor(aux->autor, aux);
-
     printf("Livro de ID %d removido.\n", aux->id);
-
     free(aux);
+
+    return;
 }
 
 void removeLivroAutor(Autor *autor, Livro *livro)
@@ -545,9 +551,47 @@ void removeLivroAutor(Autor *autor, Livro *livro)
 
         aux = aux->next;
     }
+
+    return;
 }
 
-void removeUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME]);
+void removeUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME])
+{
+    Usuario *aux = procuraUsuarioPorEmail(lista, emailUsuario);
+
+    if (aux == NULL)
+    {
+        printf("Usuário não encontrado.\n");
+        return;
+    }
+
+    if (aux->prev == NULL)
+    {
+        lista->head = aux->next;
+
+        if (aux->next != NULL)
+            aux->next->prev = NULL;
+        else
+            lista->tail = NULL;
+    }
+    else if (aux->next == NULL)
+    {
+        lista->tail = aux->prev;
+        aux->prev->next = NULL;
+    }
+    else
+    {
+        aux->prev->next = aux->next;
+        aux->next->prev = aux->prev;
+    }
+
+    lista->qtdUsuarios--;
+
+    printf("Usuário de %s removido.\n", aux->email);
+    free(aux);
+
+    return;
+}
 
 // ===== FUNÇÕES MENU =====
 
@@ -614,6 +658,7 @@ void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 
     } while (opcao != 0);
 }
+
 void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao = -1, subOpcao = -1, ID = 0;
@@ -683,7 +728,7 @@ void menuConsulta(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             getchar();
             fgets(emailUsuario, sizeof(emailUsuario), stdin);
             emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
-            mostraLivrosEmPosse(listaUsuarios, emailUsuario);
+            mostraLivrosEmPosse(listaUsuarios, listaLivros, emailUsuario);
 
             break;
 
@@ -738,6 +783,7 @@ void menuAtualizacao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 
     } while (opcao != 0);
 }
+
 void menuExclusao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao = -1, ID = 0;
@@ -758,7 +804,7 @@ void menuExclusao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
         case 1:
             printf("Informe o ID do livro: ");
             scanf("%d", &ID);
-            atualizaLivro(listaLivros, ID);
+            removeLivro(listaLivros, ID);
             break;
 
         case 2:
@@ -766,7 +812,7 @@ void menuExclusao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
             getchar();
             fgets(emailUsuario, sizeof(emailUsuario), stdin);
             emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
-            atualizaUsuario(listaUsuarios, emailUsuario);
+            removeUsuario(listaUsuarios, emailUsuario);
             break;
 
         case 0:
@@ -779,5 +825,47 @@ void menuExclusao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 
     } while (opcao != 0);
 }
-void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
+
+void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
+{
+    int opcao = -1, ID = 0;
+    char emailUsuario[SIZE_NOME];
+
+    do
+    {
+        printf("\n===EXCLUSÃO===\n");
+        printf("1. Livro\n");
+        printf("2. Usuário\n");
+        printf("0. Voltar\n");
+        printf("Opção: ");
+
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            printf("Informe o ID do livro: ");
+            scanf("%d", &ID);
+            removeLivro(listaLivros, ID);
+            break;
+
+        case 2:
+            printf("Informe o email do usuário: ");
+            getchar();
+            fgets(emailUsuario, sizeof(emailUsuario), stdin);
+            emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
+            removeUsuario(listaUsuarios, emailUsuario);
+            break;
+
+        case 0:
+            printf("Saindo...\n");
+            break;
+
+        default:
+            printf("Opção inválida\n");
+        }
+
+    } while (opcao != 0);
+}
+
 void menuDevolucao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);

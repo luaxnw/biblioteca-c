@@ -36,7 +36,6 @@ int main()
     
     do
     {
-
         printf("\n=====BIBLIOTECA DA UFFS=====\n");
         printf("=====1. CADASTRO=====\n");
         printf("=====2. CONSULTA=====\n");
@@ -60,7 +59,8 @@ int main()
         case 3:
             menuAtualizacao(listaLivros, listaUsuarios);
             break;
-        
+        case 4:
+            menuExclusao(listaLivros, listaUsuarios);
 
         case 0:
             printf("Saindo...\n");

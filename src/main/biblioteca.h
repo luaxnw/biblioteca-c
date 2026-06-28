@@ -43,7 +43,7 @@ void buscarUsuarioPorEmail(ListaUsuarios *lista, char email[SIZE_NOME]);
 
 void buscarUsuarioPorNome(ListaUsuarios *lista, char nome[SIZE_NOME]);
 
-void mostraLivrosEmPosse(ListaUsuarios *lista, char email[SIZE_NOME]);
+void mostraLivrosEmPosse(ListaUsuarios *listaUsuarios, ListaLivros *listaLivros, char email[SIZE_NOME]);
 
 
 // ===== FUNÇÕES CRIAÇÃO =====
