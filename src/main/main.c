@@ -61,9 +61,16 @@ int main()
             break;
         case 4:
             menuExclusao(listaLivros, listaUsuarios);
-
+            break;
+        case 5:
+            menuEmprestimo(listaLivros, listaUsuarios);
+            break;
+        case 6:
+            menuDevolucao(listaLivros, listaUsuarios);
+            break;
         case 0:
             printf("Saindo...\n");
+            break;
             
         default:
             printf("Opção inválida\n");

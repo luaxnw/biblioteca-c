@@ -81,6 +81,11 @@ void removeLivroAutor(Autor *autor, Livro *livro);
 
 void removeUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME]);
 
+// ===== FUNÇÕES EMPRÉSTIMOS =====
+
+void emprestaLivro(Livro *livro, ListaUsuarios *listaUsuarios, int ID, char emailUsuario[SIZE_NOME]);
+
+void devolveLivro(Livro *livro, int ID);
 
 // ===== FUNÇÕES MENU =====
 

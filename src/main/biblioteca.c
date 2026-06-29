@@ -593,6 +593,50 @@ void removeUsuario(ListaUsuarios *lista, char emailUsuario[SIZE_NOME])
     return;
 }
 
+// ===== FUNÇÕES EMPRÉSTIMOS =====
+
+void emprestaLivro(Livro *livro, ListaUsuarios *listaUsuarios, int ID, char emailUsuario[SIZE_NOME])
+{
+    Usuario *aux_2 = procuraUsuarioPorEmail(listaUsuarios, emailUsuario);
+
+    if (aux_2 == NULL)
+    {
+        printf("Usuário não localizado.\n");
+        return;
+    }
+
+    strcpy(livro->emailResponsavel, emailUsuario);
+    livro->status = 1;
+
+    printf("Livro de ID %d emprestado para %s\n", livro->id, aux_2->email);
+
+    return;
+}
+
+void devolveLivro(Livro *livro, int ID)
+{
+    Livro *aux = buscarPorId(livro, ID);
+
+    if (aux == NULL)
+    {
+        printf("Livro não localizado.\n");
+        return;
+    }
+
+    if (aux->status == 0)
+    {
+        printf("Livro não está emprestado.\n");
+        return;
+    }
+
+    strcpy(aux->emailResponsavel, "");
+    aux->status = 0;
+
+    printf("Livro de ID %d devolvido.\n", livro->id);
+
+    return;
+}
+
 // ===== FUNÇÕES MENU =====
 
 void menuCadastro(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
@@ -830,12 +874,12 @@ void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
 {
     int opcao = -1, ID = 0;
     char emailUsuario[SIZE_NOME];
+    Livro *livro = NULL;
 
     do
     {
-        printf("\n===EXCLUSÃO===\n");
+        printf("\n===EMPRÉSTIMO===\n");
         printf("1. Livro\n");
-        printf("2. Usuário\n");
         printf("0. Voltar\n");
         printf("Opção: ");
 
@@ -846,15 +890,34 @@ void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
         case 1:
             printf("Informe o ID do livro: ");
             scanf("%d", &ID);
-            removeLivro(listaLivros, ID);
-            break;
+            livro = buscarPorId(listaLivros, ID);
 
-        case 2:
+            if (livro == NULL)
+            {
+                printf("Livro não encontrdo.\n");
+                break;
+            }
+
+            if (livro->status == 1)
+            {
+                printf("Livro não está disponível para empréstimo.\n");
+                break;
+            }
+
+            printf("ID: %d\nTítulo: %s\nAutor: %s\nData de lançamento: %d/%d/%d\n", livro->id,
+                   livro->titulo,
+                   livro->autor->nome,
+                   livro->dataPubli.dia,
+                   livro->dataPubli.mes,
+                   livro->dataPubli.ano);
+            printf("\n");
+
             printf("Informe o email do usuário: ");
             getchar();
             fgets(emailUsuario, sizeof(emailUsuario), stdin);
             emailUsuario[strcspn(emailUsuario, "\n")] = '\0';
-            removeUsuario(listaUsuarios, emailUsuario);
+            emprestaLivro(livro, listaUsuarios, ID, emailUsuario);
+
             break;
 
         case 0:
@@ -868,4 +931,34 @@ void menuEmprestimo(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
     } while (opcao != 0);
 }
 
-void menuDevolucao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios);
+void menuDevolucao(ListaLivros *listaLivros, ListaUsuarios *listaUsuarios)
+{
+    int opcao = -1, ID = 0;
+
+    do
+    {
+        printf("\n===DEVOLUÇÃO===\n");
+        printf("1. Livro\n");
+        printf("0. Voltar\n");
+        printf("Opção: ");
+
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            printf("Informe o ID do livro: ");
+            scanf("%d", &ID);
+            devolveLivro(listaLivros, ID);
+            break;
+
+        case 0:
+            printf("Saindo...\n");
+            break;
+
+        default:
+            printf("Opção inválida\n");
+        }
+
+    } while (opcao != 0);
+}
