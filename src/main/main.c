@@ -44,7 +44,7 @@ int main()
         printf("=====5. EMPRÉSTIMO=====\n");
         printf("=====6. DEVOLUÇÃO=====\n");
         printf("=====0. SAIR=====\n");
-        printf("Escolha uma opção\n");
+        printf("Escolha uma opção: ");
 
         scanf("%d", &opcaoPrincipal);
 
