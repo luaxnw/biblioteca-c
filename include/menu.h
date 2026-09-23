@@ -1,9 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
 
-typedef struct ListaLivros ListaLivros;
-typedef struct ListaUsuarios ListaUsuarios;
-
 void menuCadastro(
     ListaLivros *listaLivros,
     ListaUsuarios *listaUsuarios
