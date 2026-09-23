@@ -6,32 +6,6 @@
 #include <string.h>
 #include <stdio.h>
 
-struct Livro
-{
-    char titulo[SIZE_TITULO];
-    Autor *autor;
-    Data dataPubli;
-    int id;
-    int status;
-    char emailResponsavel[SIZE_NOME];
-
-    Livro *next;
-    Livro *prev;
-};
-
-struct ListaLivros
-{
-    Livro *head;
-    Livro *tail;
-
-    int qtdLivros;
-};
-
-struct Autor
-{
-    char nome[SIZE_NOME];
-    ListaLivros *listaDoAutor;
-};
 
 ListaLivros *criarListaLivros(void)
 {
