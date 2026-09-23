@@ -3,6 +3,7 @@
 
 #define SIZE_TITULO 50
 
+
 typedef struct Data
 {
     int dia;
@@ -10,9 +11,26 @@ typedef struct Data
     int ano;
 } Data;
 
-typedef struct Livro Livro;
-typedef struct ListaLivros ListaLivros;
-typedef struct Autor Autor;
+typedef struct Livro
+{
+    char titulo[SIZE_TITULO];
+    Autor *autor;
+    Data dataPubli;
+    int id;
+    int status;
+    char emailResponsavel[SIZE_NOME];
+
+    Livro *next;
+    Livro *prev;
+} Livro;
+
+typedef struct ListaLivros
+{
+    Livro *head;
+    Livro *tail;
+
+    int qtdLivros;
+} ListaLivros;
 
 ListaLivros *criarListaLivros(void);
 
