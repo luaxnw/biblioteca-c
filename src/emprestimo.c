@@ -6,11 +6,12 @@
 #include <string.h>
 #include <stdio.h>
 
+
 void emprestaLivro(Livro *livro, ListaUsuarios *listaUsuarios, int ID, char emailUsuario[SIZE_NOME])
 {
-    Usuario *aux_2 = procuraUsuarioPorEmail(listaUsuarios, emailUsuario);
+    Usuario *aux = procuraUsuarioPorEmail(listaUsuarios, emailUsuario);
 
-    if (aux_2 == NULL)
+    if (aux == NULL)
     {
         printf("Usuário não localizado.\n");
         return;
@@ -19,7 +20,7 @@ void emprestaLivro(Livro *livro, ListaUsuarios *listaUsuarios, int ID, char emai
     strcpy(livro->emailResponsavel, emailUsuario);
     livro->status = 1;
 
-    printf("Livro de ID %d emprestado para %s\n", livro->id, aux_2->email);
+    printf("Livro de ID %d emprestado para %s\n", livro->id, aux->email);
 
     return;
 }
