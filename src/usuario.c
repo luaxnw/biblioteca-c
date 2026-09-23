@@ -1,26 +1,10 @@
 #include "usuario.h"
 
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-struct Usuario
-{
-    char nome[SIZE_NOME];
-    char email[SIZE_NOME];
 
-    Usuario *next;
-    Usuario *prev;
-};
-
-struct ListaUsuarios
-{
-    Usuario *head;
-    Usuario *tail;
-
-    int qtdUsuarios;
-};
 
 ListaUsuarios *criarListaUsuarios(void)
 {
