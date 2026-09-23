@@ -3,8 +3,23 @@
 
 #define SIZE_NOME 30
 
-typedef struct Usuario Usuario;
-typedef struct ListaUsuarios ListaUsuarios;
+typedef struct Usuario
+{
+    char nome[SIZE_NOME];
+    char email[SIZE_NOME];
+
+    Usuario *next;
+    Usuario *prev;
+
+} Usuario;
+
+typedef struct ListaUsuarios
+{
+    Usuario *head;
+    Usuario *tail;
+
+    int qtdUsuarios;
+} ListaUsuarios;
 
 ListaUsuarios *criarListaUsuarios(void);
 
