@@ -1,10 +1,6 @@
 #ifndef EMPRESTIMO_H
 #define EMPRESTIMO_H
 
-typedef struct Livro Livro;
-typedef struct ListaUsuarios ListaUsuarios;
-typedef struct ListaLivros ListaLivros;
-
 void emprestaLivro(
     Livro *livro,
     ListaUsuarios *listaUsuarios,
