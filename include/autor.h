@@ -12,6 +12,6 @@ typedef struct Autor
 Autor *criaAutor(char nome[SIZE_NOME]);
 
 void addLivroAutor(Autor *autor, Livro *livro);
-void removeLivroAutor(Autor *autor, Livro *livro);
+void removeLivroAutor(Autor *autor, int ID);
 
 #endif
