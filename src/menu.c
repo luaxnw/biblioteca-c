@@ -1,8 +1,10 @@
-#include "livro.h"
-#include "usuario.h"
-#include "autor.h"
-#include "emprestimo.h"
-#include "menu.h"
+#include "../include/usuario.h"
+#include "../include/menu.h"
+#include "../include/livro.h"
+#include "../include/autor.h"
+#include "../include/emprestimo.h"
+#include "../include/data.h"
+
 
 #include <stdlib.h>
 #include <string.h>

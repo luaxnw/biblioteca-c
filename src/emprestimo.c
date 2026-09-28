@@ -1,6 +1,10 @@
-#include "emprestimo.h"
-#include "livro.h"
-#include "usuario.h"
+#include "../include/usuario.h"
+#include "../include/menu.h"
+#include "../include/livro.h"
+#include "../include/autor.h"
+#include "../include/emprestimo.h"
+#include "../include/data.h"
+
 
 #include <stdlib.h>
 #include <string.h>
@@ -25,9 +29,9 @@ void emprestaLivro(Livro *livro, ListaUsuarios *listaUsuarios, int ID, char emai
     return;
 }
 
-void devolveLivro(Livro *livro, int ID)
+void devolveLivro(ListaLivros *lista, int ID)
 {
-    Livro *aux = buscarPorId(livro, ID);
+    Livro *aux = buscarPorId(lista, ID);
 
     if (aux == NULL)
     {

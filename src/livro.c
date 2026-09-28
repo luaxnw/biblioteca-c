@@ -1,11 +1,12 @@
-#include "livro.h"
-#include "usuario.h"
-#include "autor.h"
+#include "../include/usuario.h"
+#include "../include/menu.h"
+#include "../include/livro.h"
+#include "../include/autor.h"
+#include "../include/emprestimo.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
 
 ListaLivros *criarListaLivros(void)
 {
@@ -118,49 +119,20 @@ void mostraStatusLivro(Livro *livro)
     return;
 }
 
-void atualizaLivro(ListaLivros *lista, int ID)
+void mostrarLivro(Livro *livro)
 {
-    Livro *aux = buscarPorId(lista, ID);
-    char tituloLivro[SIZE_TITULO], nomeAutor[SIZE_NOME];
-    int dia = 0, mes = 0, ano = 0;
+    if (livro == NULL)
+        return;
 
-    if (aux != NULL)
-    {
-        printf("Informe o novo título ou ENTER para não alterar: ");
-        getchar();
-        fgets(tituloLivro, sizeof(tituloLivro), stdin);
-        tituloLivro[strcspn(tituloLivro, "\n")] = '\0';
-
-        if (!(tituloLivro[0] == '\0'))
-        {
-            strcpy(aux->titulo, tituloLivro);
-            printf("Título do livro de ID %d alterado para %s!\n", aux->id, aux->titulo);
-        }
-
-        printf("Informe o novo autor ou ENTER para não alterar: ");
-        fgets(nomeAutor, sizeof(nomeAutor), stdin);
-        nomeAutor[strcspn(nomeAutor, "\n")] = '\0';
-
-        if (!(nomeAutor[0] == '\0'))
-        {
-            strcpy(aux->autor->nome, nomeAutor);
-            printf("Autor do livro de ID %d alterado para %s!\n", aux->id, aux->autor->nome);
-        }
-
-        printf("Informe a nova data de lançamento ou 0 para não alterar: ");
-        scanf("%d/%d/%d", &dia, &mes, &ano);
-
-        if (!(dia == 0 || mes == 0 || ano == 0))
-        {
-            aux->dataPubli = criaData(dia, mes, ano);
-            printf("Data de lançamento do livro de ID %d alterada para %d/%d/%d!\n", aux->id,
-                   aux->dataPubli.dia,
-                   aux->dataPubli.mes,
-                   aux->dataPubli.ano);
-        }
-    }
-    return;
+    printf("ID: %d\nAUTOR: %s\nDATA: %d/%d/%d\nRESPONSÁVEL: %s\nSTATUS: ", livro->id,
+           livro->autor->nome,
+           livro->dataPubli.dia,
+           livro->dataPubli.mes,
+           livro->dataPubli.ano,
+           livro->emailResponsavel);
+    mostraStatusLivro(livro);
 }
+
 void atualizaLivro(ListaLivros *lista, int ID)
 {
     Livro *aux = buscarPorId(lista, ID);
@@ -211,7 +183,7 @@ void removeLivro(ListaLivros *lista, int ID)
 
     if (aux == NULL)
     {
-        printf("\nLivro não encontraoo.\n");
+        printf("\nLivro não encontrado.\n");
         return;
     }
 
@@ -239,7 +211,7 @@ void removeLivro(ListaLivros *lista, int ID)
 
     // remove da lista de livros do autor
 
-    removeLivroAutor(aux->autor, aux);
+    removeLivroAutor(aux->autor, ID);
     printf("Livro de ID %d removido.\n", aux->id);
     free(aux);
 

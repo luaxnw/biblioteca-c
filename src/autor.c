@@ -1,5 +1,9 @@
-#include "autor.h"
-#include "livro.h"
+#include "../include/usuario.h"
+#include "../include/menu.h"
+#include "../include/livro.h"
+#include "../include/autor.h"
+#include "../include/emprestimo.h"
+#include "../include/data.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -45,9 +49,37 @@ void addLivroAutor(Autor *autor, Livro *livro)
 
 void removeLivroAutor(Autor *autor, int ID)
 {
-    removeLivro(autor->listaDoAutor, ID);
+    Livro *aux = buscarPorId(autor->listaDoAutor, ID);
+
+    if (aux == NULL)
+    {
+        printf("\nLivro não encontrado.\n");
+        return;
+    }
+
+    if (aux->prev == NULL)
+    {
+        autor->listaDoAutor->head = aux->next;
+
+        if (aux->next != NULL)
+            aux->next->prev = NULL;
+        else
+            autor->listaDoAutor->tail = NULL;
+    }
+    else if (aux->next == NULL)
+    {
+        autor->listaDoAutor->tail = aux->prev;
+        aux->prev->next = NULL;
+    }
+    else
+    {
+        aux->prev->next = aux->next;
+        aux->next->prev = aux->prev;
+    }
+
+    autor->listaDoAutor->qtdLivros--;
+
     printf("Autor %s - Livro de ID %d removido\n", autor->nome, ID);
 
     return;
 }
-
