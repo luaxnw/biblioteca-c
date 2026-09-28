@@ -1,4 +1,11 @@
-#include "biblioteca.h"
+#include "../include/usuario.h"
+#include "../include/menu.h"
+#include "../include/livro.h"
+#include "../include/autor.h"
+#include "../include/emprestimo.h"
+#include "../include/data.h"
+
+#include <stdio.h>
 
 int main()
 {
@@ -30,10 +37,8 @@ int main()
     addUsuario(listaUsuarios, "Felipe Santos", "felipe.santos@outlook.com");
     addUsuario(listaUsuarios, "roger", "roger.com");
 
-
-    
     int opcaoPrincipal = -1;
-    
+
     do
     {
         printf("\n=====BIBLIOTECA DA UFFS=====\n");
@@ -71,7 +76,7 @@ int main()
         case 0:
             printf("Saindo...\n");
             break;
-            
+
         default:
             printf("Opção inválida\n");
         }
