@@ -3,6 +3,12 @@
 
 #define SIZE_NOME 30
 
+typedef struct ListaLivros ListaLivros;
+typedef struct Livro Livro;
+
+#include "data.h"
+
+
 typedef struct Autor
 {
     char nome[SIZE_NOME];

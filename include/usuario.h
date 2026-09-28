@@ -1,15 +1,18 @@
 #ifndef USUARIO_H
 #define USUARIO_H
 
-#define SIZE_NOME 30
+#define SIZE_NOME 30 
+
+typedef struct Data Data;
+
 
 typedef struct Usuario
 {
     char nome[SIZE_NOME];
     char email[SIZE_NOME];
 
-    Usuario *next;
-    Usuario *prev;
+    struct Usuario *next;
+    struct Usuario *prev;
 
 } Usuario;
 

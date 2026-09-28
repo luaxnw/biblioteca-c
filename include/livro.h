@@ -2,14 +2,11 @@
 #define LIVRO_H
 
 #define SIZE_TITULO 50
+#define SIZE_NOME 30
 
+typedef struct Autor Autor;
+#include "data.h"
 
-typedef struct Data
-{
-    int dia;
-    int mes;
-    int ano;
-} Data;
 
 typedef struct Livro
 {
@@ -20,8 +17,8 @@ typedef struct Livro
     int status;
     char emailResponsavel[SIZE_NOME];
 
-    Livro *next;
-    Livro *prev;
+    struct Livro *next;
+    struct Livro *prev;
 } Livro;
 
 typedef struct ListaLivros
@@ -48,10 +45,14 @@ Livro *buscarPorId(
 
 void buscarPorAutor(
     ListaLivros *lista,
-    char nome[30]
+    char nome[SIZE_NOME]
 );
 
 void mostraStatusLivro(
+    Livro *livro
+);
+
+void mostrarLivro(
     Livro *livro
 );
 
@@ -65,10 +66,5 @@ void removeLivro(
     int ID
 );
 
-Data criaData(
-    int dia,
-    int mes,
-    int ano
-);
 
 #endif
